@@ -15,20 +15,11 @@ app = Flask(__name__)
 games = {}
 
 
-class OverlappingShipsError:
-    pass
-
-
-class ShipsNotSetError:
-    pass
-
-
 @app.route("/")
 def index():
     return render_template("index.html")
 
 
-@app.route("/game/", methods=["PUT"])
 @app.route("/game", methods=["PUT"])
 def new_game():
     for (id, game) in games:
@@ -37,10 +28,20 @@ def new_game():
 
     newgame = BattleshipGame()
     games[unicode(newgame.id)] = newgame
-    return jsonify(id=unicode(newgame.id))
+
+    ships = request.json
+    player_ships = []
+    for name in SHIP_IDS:
+        if name not in ships:
+            abort(400)
+        player_ships.append((SHIP_IDS[name], set([tuple(point) for point in ships[name]])))
+
+    if not newgame.place_player_ships(player_ships):
+        abort(400)
+
+    return jsonify(id=unicode(newgame.id), ships=dict([(SHIP_NAMES[ship[0]], list(ship[1])) for ship in game.player_ships]))
 
 
-@app.route("/game/<id>/", methods=["POST"])
 @app.route("/game/<id>", methods=["POST"])
 def post_turn(id):
     if id not in games:
@@ -60,28 +61,7 @@ def post_turn(id):
         winner=game_over[1])
 
 
-@app.route("/game/<id>/ships", methods=["POST"])
-@app.route("/game/<id>/ships/", methods=["POST"])
-def post_ships(id):
-    if id not in games:
-        abort(404)
-
-    game = games[id]
-
-    ships = request.json
-    player_ships = []
-    for name in SHIP_IDS:
-        if name not in ships:
-            abort(400)
-        player_ships.append((SHIP_IDS[name], set([tuple(point) for point in ships[name]])))
-
-    if not game.place_player_ships(player_ships):
-        abort(400)
-
-    return jsonify(ships=dict([(SHIP_NAMES[ship[0]], list(ship[1])) for ship in game.player_ships]))
-
-
-@app.route("/game/<id>/", methods=["GET"])
+@app.route("/game/<id>", methods=["GET"])
 def get_status(id):
     if id not in games:
         abort(404)

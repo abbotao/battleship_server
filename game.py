@@ -2,26 +2,29 @@ import uuid
 import random
 import time
 
-SHIP_NAMES = { 1: "carrier",
-               2: "battleship",
-               3: "submarine",
-               4: "destroyer",
-               5: "patrol boat"
+SHIP_NAMES = {1: "carrier",
+              2: "battleship",
+              3: "submarine",
+              4: "destroyer",
+              5: "patrol boat"
 }
 
-SHIP_IDS = { "carrier": 1,
-             "battleship": 2,
-             "submarine": 3,
-             "destroyer": 4,
-             "patrol boat": 5
+
+SHIP_IDS = {"carrier": 1,
+            "battleship": 2,
+            "submarine": 3,
+            "destroyer": 4,
+            "patrol boat": 5
 }
 
-SHIP_SIZE = { 1: 5,
+
+SHIP_SIZE = {1: 5,
              2: 4,
              3: 3,
              4: 3,
              5: 2
 }
+
 
 class BattleshipGame:
     def __init__(self):
@@ -31,7 +34,7 @@ class BattleshipGame:
         self.board = set()
         self.shots = set()
         self.last_touch = time.time()
-        self.place_ships();
+        self.place_ships()
 
     def place_player_ships(self, player_ships):
         board = set()
@@ -109,12 +112,12 @@ class BattleshipGame:
                     ship = SHIP_NAMES[ship[0]]
                     self.player_ships.remove(curship)
 
-        return (hit, sunk, ship)
+        return {"hit": hit, "sunk": sunk, "ship": ship}
 
     def make_shot(self):
         board = set([(x, y) for x in range(10) for y in range(10)])
         board -= self.shots
-        shot = random.sample(board,1)[0]
+        shot = random.sample(board, 1)[0]
         self.shots.add(shot)
         check = self.check_shot_player(shot)
         return (shot, check)
