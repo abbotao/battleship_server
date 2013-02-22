@@ -1,1 +1,47 @@
 <h1>Battleship</h1>
+<h2>PUT /game</h2>
+<pre>
+{ "carrier": [[0,0], [0,1], [0,2], [0,3], [0,4]],
+  "battleship": [[1,0], [1,1], [1,2], [1,3]],
+  "submarine": [[2,0], [2,1], [2,2]],
+  "destroyer": [[3,0], [3,1], [3,2]],
+  "patrol boat": [[4,0], [4,1]]
+}
+</pre>
+Response
+<pre>
+    { "ships": 
+        { "submarine": [ [ 2, 0 ], [ 2, 1 ], [ 2, 2 ] ], 
+          "battleship": [ [ 1, 2 ], [ 1, 0 ], [ 1, 3 ], [ 1, 1 ] ], 
+          "carrier": [ [ 0, 1 ], [ 0, 3 ], [ 0, 0 ], [ 0, 2 ], [ 0, 4 ] ],
+           "destroyer": [ [ 3, 0 ], [ 3, 2 ], [ 3, 1 ] ], 
+           "patrol boat": [ [ 4, 1 ], [ 4, 0 ] ] }, 
+      "id": "40acbb54-c5a8-4384-b92d-3d238ef11d48" }
+</pre>
+<h2>POST /game/:id</h2>
+<pre>
+ { "shot": [0, 1] }
+</pre>
+Response
+<pre>
+{
+     "sunk": false, 
+     "hit": false, 
+     "game_over": false, 
+     "ship": null, 
+     "winner": null,
+     "shot": [ [0, 1], { "sunk": false,  "ship": null,  "hit": true }]
+}
+</pre>
+<h2>GET /game/:id</h2>
+Response
+<pre>
+    { "ships": 
+        { "submarine": [ [ 2, 0 ], [ 2, 1 ], [ 2, 2 ] ], 
+          "battleship": [ [ 1, 2 ], [ 1, 0 ], [ 1, 3 ], [ 1, 1 ] ], 
+          "carrier": [ [ 0, 1 ], [ 0, 3 ], [ 0, 0 ], [ 0, 2 ], [ 0, 4 ] ],
+           "destroyer": [ [ 3, 0 ], [ 3, 2 ], [ 3, 1 ] ], 
+           "patrol boat": [ [ 4, 1 ], [ 4, 0 ] ] 
+        }
+    }
+</pre>

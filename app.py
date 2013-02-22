@@ -39,7 +39,7 @@ def new_game():
     if not newgame.place_player_ships(player_ships):
         abort(400)
 
-    return jsonify(id=unicode(newgame.id), ships=dict([(SHIP_NAMES[ship[0]], list(ship[1])) for ship in game.player_ships]))
+    return jsonify(id=unicode(newgame.id), ships=dict([(SHIP_NAMES[ship[0]], list(ship[1])) for ship in newgame.player_ships]))
 
 
 @app.route("/game/<id>", methods=["POST"])
