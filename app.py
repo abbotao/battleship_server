@@ -4,6 +4,7 @@ from flask import jsonify
 from flask import abort
 from flask import request
 
+import os
 import time
 
 from game import BattleshipGame
@@ -13,16 +14,19 @@ app = Flask(__name__)
 
 games = {}
 
+
 class OverlappingShipsError:
     pass
+
 
 class ShipsNotSetError:
     pass
 
+
 @app.route("/")
 def index():
-    import pdb; pdb.set_trace()
     return render_template("index.html")
+
 
 @app.route("/game/", methods=["PUT"])
 @app.route("/game", methods=["PUT"])
@@ -34,6 +38,7 @@ def new_game():
     newgame = BattleshipGame()
     games[unicode(newgame.id)] = newgame
     return jsonify(id=unicode(newgame.id))
+
 
 @app.route("/game/<id>/", methods=["POST"])
 @app.route("/game/<id>", methods=["POST"])
@@ -49,9 +54,11 @@ def post_turn(id):
     shot_result = game.check_shot(shot)
     response_shot = game.make_shot()
     game_over = game.check_game_over()
-    return jsonify(hit=shot_result[0], sunk=shot_result[1], 
+
+    return jsonify(hit=shot_result[0], sunk=shot_result[1],
         ship=shot_result[2], shot=response_shot, game_over=game_over[0],
         winner=game_over[1])
+
 
 @app.route("/game/<id>/ships", methods=["POST"])
 @app.route("/game/<id>/ships/", methods=["POST"])
@@ -84,4 +91,5 @@ def get_status(id):
     return jsonify(ships=dict([(SHIP_NAMES[ship[0]], list(ship[1])) for ship in game.player_ships]))
 
 if __name__ == "__main__":
-    app.run()
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
